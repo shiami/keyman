@@ -72,7 +72,7 @@ android {
 
     play {
         // Deactivate lower conflicting version APKs
-        untrackOld = true
+        resolutionStrategy = "ignore"
         switch (System.env.TIER) {
             case 'beta':
                 track = 'beta'
@@ -99,17 +99,13 @@ repositories {
     }
 }
 
-ext {
-    currentFirebaseVersion = "16.0.4"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     api(name: 'keyman-engine', ext: 'aar')
-    implementation "com.google.firebase:firebase-core:$currentFirebaseVersion"
-    implementation "com.google.firebase:firebase-crash:$currentFirebaseVersion"
+    implementation "com.google.firebase:firebase-core:16.0.4"
+    implementation "com.google.firebase:firebase-crash:16.2.1"
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true
     }

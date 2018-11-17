@@ -1,16 +1,10 @@
 apply plugin: 'com.android.application'
-apply plugin: 'com.github.triplet.play'
+apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion 28
-    playAccountConfigs {
-        defaultAccountConfig {
-            if (project.hasProperty("keys_json_file")) {
-                jsonFile = file(project.ext.keys_json_file)
-            }
-        }
-    }
+
     defaultConfig {
         applicationId "com.tavultesoft.kmapro"
         minSdkVersion 15
@@ -36,8 +30,6 @@ android {
             versionCode 100
             versionName majorMinorVersion + '.0.0'
         }
-
-        playAccountConfig = playAccountConfigs.defaultAccountConfig
     }
 
     if (project.hasProperty("release_store_file")) {
@@ -70,22 +62,28 @@ android {
         disable 'MissingTranslation'
     }
 
-    play {
-        // Deactivate lower conflicting version APKs
-        resolutionStrategy = "ignore"
-        switch (System.env.TIER) {
-            case 'beta':
-                track = 'beta'
-                break
+    if (project.hasProperty("keys_json_file")) {
+        apply plugin: 'com.github.triplet.play'
 
-            case 'stable':
-                track = 'production'
-                break
+        serviceAccountCredentials = file(project.ext.keys_json_file)
 
-            default:
-                track = 'alpha'
+        play {
+            // Deactivate lower conflicting version APKs
+            resolutionStrategy = "ignore"
+            switch (System.env.TIER) {
+                case 'beta':
+                    track = 'beta'
+                    break
+
+                case 'stable':
+                    track = 'production'
+                    break
+
+                default:
+                    track = 'alpha'
+            }
+            println "TIER set to $track"
         }
-        println "TIER set to $track"
     }
 }
 
@@ -104,7 +102,7 @@ dependencies {
     implementation 'com.android.support:appcompat-v7:28.0.0'
     implementation 'com.android.support:design:28.0.0'
     api(name: 'keyman-engine', ext: 'aar')
-    implementation "com.google.firebase:firebase-core:16.0.4"
+    implementation "com.google.firebase:firebase-core:16.0.5"
     implementation "com.google.firebase:firebase-crash:16.2.1"
     implementation('com.crashlytics.sdk.android:crashlytics:2.9.5@aar') {
         transitive = true
@@ -126,4 +124,3 @@ def void dumpProperties(it){
 }
 */
 
-apply plugin: 'com.google.gms.google-services'
